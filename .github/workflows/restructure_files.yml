@@ -1,33 +1,31 @@
-name: Restructure files
-
-on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
-
 jobs:
   test-and-build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v2
-        with:
-          persist-credentials: false
-          fetch-depth: 0
-
-      - name: Install Prettier
-        run: npm install --save-dev --save-exact prettier
-
-      - name: Restructure files
-        run: node_modules/.bin/prettier --write README.md animation-simulation/
-
-      - name: Commit files
-        run: |
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git diff-index --quiet HEAD -- || git commit -am "代码重构 【Github Actions】"
-
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+    - continue-on-error: true
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        persist-credentials: false
+    - continue-on-error: true
+      name: Install Prettier
+      run: npm install --save-dev --save-exact prettier
+    - continue-on-error: true
+      name: Restructure files
+      run: node_modules/.bin/prettier --write README.md animation-simulation/
+    - continue-on-error: true
+      name: Commit files
+      run: "git config --local user.email \"41898282+github-actions[bot]@users.noreply.github.com\"\
+        \ngit config --local user.name \"github-actions[bot]\"\ngit diff-index --quiet\
+        \ HEAD -- || git commit -am \"\u4EE3\u7801\u91CD\u6784 \u3010Github Actions\u3011\
+        \"\n"
+    - continue-on-error: true
+      name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        branch: ${{ github.ref }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+name: Restructure files
+on:
+  repository_dispatch:
+    types: trigger-ga___restructure_files.yml
